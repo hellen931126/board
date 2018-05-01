@@ -15,19 +15,14 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     TEMPLATES_AUTO_RELOAD = True
-    SQLALCHEMY_DATABASE_URI = "sqlite:///"+os.path.join(basedir,"data-dev.sqlite")
-    BOARD_COMMENTS_PER_PAGE = os.environ.get("FLASKY_POSTS_PER_PAGE") or 8
-
-class TestingConfig(Config):
-    TESTING = True    
-    SQLALCHEMY_DATABASE_URI = "sqlite:///"+os.path.join(basedir,"data-test.sqlite")
+    SQLALCHEMY_DATABASE_URI = "mysql://root@localhost:3306/board"
+    BOARD_COMMENTS_PER_PAGE = os.environ.get("BOARD_COMMENTS_PER_PAGE") or 8
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = "sqlite:///"+os.path.join(basedir,"data.sqlite")
+    SQLALCHEMY_DATABASE_URI = "mysql://root@localhost/board"
 
 config = {
     "development":DevelopmentConfig,
-    "testing":TestingConfig,
-    "productin":ProductionConfig,
+    "production":ProductionConfig,
     "default":DevelopmentConfig
 }
