@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, Length, Regexp, EqualTo
+from wtforms.validators import DataRequired, Length, EqualTo
 from ..models import User
 from wtforms import ValidationError
 from flask_login import current_user
@@ -11,5 +11,13 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Keep me logged in')
     submit = SubmitField("Log in")
 
+class RegisterationForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired(), Length(1,64)])
+    password = PasswordField("Password", validators=[DataRequired(),EqualTo("password2","Passwords must match")])
+    password2 = PasswordField("Comfirm password", validators=[DataRequired(),EqualTo("password","Passwords must match")])
+    submit = SubmitField("Sign up")
 
+    def validate_username(self, field):
+        if User.query.filter_by(username=field.data).first() is not None:
+            raise ValidationError("Username already in use")
   

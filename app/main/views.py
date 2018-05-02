@@ -1,7 +1,8 @@
 from flask import render_template, session, redirect, url_for, request, flash
 from flask_login import login_required, login_user, logout_user
-from .forms import LoginForm
+from .forms import LoginForm, RegisterationForm
 from ..models import User
+from .. import db
 
 from . import main
 
@@ -31,3 +32,13 @@ def logout():
 @login_required
 def secret():
     return 'Only authenticated users are allowed!'
+
+@main.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for("main.login"))
+    return render_template("register.html", form=form)
