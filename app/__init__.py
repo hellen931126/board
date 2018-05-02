@@ -13,6 +13,7 @@ login_manager = LoginManager()
 pagedown = PageDown()
 
 login_manager.session_protection = "basic"
+login_manager.login_view = 'login'
 
 def create_app(config_name):
     app = Flask(__name__)

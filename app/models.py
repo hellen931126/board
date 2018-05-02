@@ -7,13 +7,11 @@ from datetime import datetime
 
 class User(UserMixin, db.Model):
     __tablename__="users"
-    id = db.Column(db.Integer)
-    uuid = db.Column(db.String(36), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(36), unique=True, index=True)
     created_at = db.Column(db.DateTime(),default=datetime.utcnow)
     updated_at = db.Column(db.DateTime(),default=datetime.utcnow)
     password_hash = db.Column(db.String(128))
-    avatar = db.Column(db.Text, default="user/default.png", nullable=True)
     comments = db.relationship('Comment', backref='user')
 
     def __init__(self, **kwargs):
@@ -37,10 +35,13 @@ class User(UserMixin, db.Model):
 
 class Comment(db.Model):
     __tablename__ = "comments"
-    id = db.Column(db.Integer)
-    uuid = db.Column(db.String(36), primary_key=True)    
+    id = db.Column(db.Integer, primary_key=True)    
     content = db.Column(db.Text)
-    user_uuid = db.Column(db.String(36), db.ForeignKey('users.uuid'))   
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))   
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     
+@login_manager.user_loader
+def load_user(id):
+    print('user_id is', id)
+    return User.query.get(id)
