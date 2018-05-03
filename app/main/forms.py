@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo
 from ..models import User
 from wtforms import ValidationError
@@ -20,4 +20,8 @@ class RegisterationForm(FlaskForm):
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first() is not None:
             raise ValidationError("Username already in use")
+
+class CommentForm(FlaskForm):
+    content = TextAreaField("What's on your mind?", validators=[DataRequired()],render_kw = {"placeholder":"Write down your message here"})
+    submit = SubmitField("Submit")
   

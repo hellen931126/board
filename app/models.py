@@ -9,8 +9,8 @@ class User(UserMixin, db.Model):
     __tablename__="users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(36), unique=True, index=True)
-    created_at = db.Column(db.DateTime(),default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime(),default=datetime.utcnow)
+    created_at = db.Column(db.DateTime(),default=datetime.now)
+    updated_at = db.Column(db.DateTime(),default=datetime.now)
     password_hash = db.Column(db.String(128))
     comments = db.relationship('Comment', backref='user')
 
@@ -29,19 +29,19 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
     
     def update_profile(self):
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now()
         db.session.add(self)
 
+@login_manager.user_loader
+def load_user(id):
+    print('user id is', id)
+    return User.query.get(id)
 
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)    
     content = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))   
-    created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, index=True, default=datetime.now)
+    updated_at = db.Column(db.DateTime, index=True, default=datetime.now)
     
-@login_manager.user_loader
-def load_user(id):
-    print('user_id is', id)
-    return User.query.get(id)

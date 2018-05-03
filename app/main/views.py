@@ -1,14 +1,22 @@
 from flask import render_template, session, redirect, url_for, request, flash
-from flask_login import login_required, login_user, logout_user
-from .forms import LoginForm, RegisterationForm
-from ..models import User
+from flask_login import login_required, login_user, logout_user, current_user
+from .forms import LoginForm, RegisterationForm, CommentForm
+from ..models import User, Comment
 from .. import db
 
 from . import main
 
 @main.route("/", methods=["GET","POST"])
 def index():
-    return render_template('index.html')
+    form = CommentForm()
+    if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            return redirect(url_for('main.login'))
+        comment = Comment(content=form.content.data, user=current_user._get_current_object())
+        db.session.add(comment)
+        return redirect(url_for('main.index'))
+    comments = Comment.query.order_by(Comment.updated_at.desc()).all()
+    return render_template('index.html', form=form, comments=comments)
 
 @main.route('/login', methods=['GET','POST'])
 def login():
