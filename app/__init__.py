@@ -11,7 +11,6 @@ moment = Moment()
 db = SQLAlchemy()
 login_manager = LoginManager()
 pagedown = PageDown()
-redis_store = FlaskRedis()
 
 login_manager.session_protection = "basic"
 login_manager.login_view = 'login'
@@ -30,5 +29,4 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     pagedown.init_app(app)
-    redis_store.init_app(app)
     return app
