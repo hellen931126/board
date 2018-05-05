@@ -20,6 +20,10 @@
     <ul>
         {% for comment in comments %}
         <li>
+            <div>"========================================="</div>
+            <div>{{ moment(comment.updated_at).unix() }}></div>            
+            <div>"========================================="</div>
+
             <div style="float:right">{{ moment(comment.updated_at).fromNow() }}</div>
             <div>author : {{ comment.user.username }}</div>
             <div style="font-size: 2em">{{ comment.content }}</div>
