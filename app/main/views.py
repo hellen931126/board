@@ -36,11 +36,6 @@ def logout():
     flash('You have been logged out.')
     return redirect(url_for('main.index'))
 
-@main.route('/secret')
-@login_required
-def secret():
-    return 'Only authenticated users are allowed!'
-
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterationForm()

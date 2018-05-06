@@ -17,6 +17,7 @@ class DevelopmentConfig(Config):
     TEMPLATES_AUTO_RELOAD = True
     SQLALCHEMY_DATABASE_URI = "mysql://root@localhost:3306/board"
     BOARD_COMMENTS_PER_PAGE = os.environ.get("BOARD_COMMENTS_PER_PAGE") or 8
+    
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = "mysql://root@localhost/board"
