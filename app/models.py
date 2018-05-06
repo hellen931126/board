@@ -34,7 +34,6 @@ class User(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(id):
-    print('user id is', id)
     return User.query.get(id)
 
 class Comment(db.Model):
