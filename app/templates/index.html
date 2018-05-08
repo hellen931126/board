@@ -3,6 +3,29 @@
 
 {% block title%}Board{% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fingerprintjs2@1.8.0/dist/fingerprint2.min.js"></script>
+<script>
+new Fingerprint2().get(function(result) {
+  console.log("browerid is " + result) // a hash, representing your device fingerprint
+  var browser_info = {'id': result};
+  $.ajax({
+        type:'GET',
+        url:'{{ url_for("main.index" )}}',
+        data:browser_info,
+        dataType:'json',//希望服务器返回json格式的数据
+        success:function(browser_info){
+            alert(JSON.stringify(browser_info));
+            alert(browser_info['test'])
+        }
+    });
+})
+</script>
+
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="page-header">
