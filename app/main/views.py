@@ -8,6 +8,8 @@ from . import main
 
 @main.route("/", methods=["GET","POST"])
 def index():
+    browser_id = request.args.get('id')
+    print(browser_id)
     form = CommentForm()
     if form.validate_on_submit():
         if not current_user.is_authenticated:

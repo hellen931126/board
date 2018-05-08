@@ -3,7 +3,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
-    BOOTSTRAP_SERVE_LOCAL= True
+    BOOTSTRAP_SERVE_LOCAL= False
     SECRET_KEY="Hard to guess string"
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
