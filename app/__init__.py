@@ -3,7 +3,6 @@ from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_pagedown import PageDown
 from flask_redis import FlaskRedis
 from config import config
 
@@ -11,7 +10,6 @@ bootstrap = Bootstrap()
 moment = Moment()
 db = SQLAlchemy()
 login_manager = LoginManager()
-pagedown = PageDown()
 redis = FlaskRedis()
 login_manager.session_protection = "basic"
 login_manager.login_view = 'login'
@@ -29,5 +27,4 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
     redis.init_app(app)
-    pagedown.init_app(app)
     return app
