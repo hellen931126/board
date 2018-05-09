@@ -9,3 +9,13 @@ name = "pypi"
 python_version = "3.5"
 
 [packages]
+flask = "*"
+flask-bootstrap = "*"
+flask-moment = "*"
+flask-sqlalchemy = "*"
+flask-login = "*"
+flask-redis = "*"
+flask-script = "*"
+flask-migrate = "*"
+flask-wtf = "*"
+mysqlclient = "*"
