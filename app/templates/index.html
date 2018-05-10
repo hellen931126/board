@@ -9,17 +9,23 @@
 <script src="https://cdn.jsdelivr.net/npm/fingerprintjs2@1.8.0/dist/fingerprint2.min.js"></script>
 <script>
 new Fingerprint2().get(function(result) {
-  var browser_info = {'id': result};
-  $.ajax({
+    var data = {'id': result};
+    $.ajax({
         type:'GET',
-        url:'{{ url_for("main.index" )}}',
-        data:browser_info,
+        url:'{{ url_for("main.getID" )}}',
+        data:data,
         dataType:'json',
-        success:function(browser_info){
-            alert(JSON.stringify(browser_info));
-            alert(browser_info['test'])
+        success:function(data){
+            console.log(result)
+            $("#browser_id").text("browser_id : " + result)
         }
     });
+    $.ajax({  
+           type: "post",  
+           url: '{{ url_for("main.index") }}',  
+           contentType : "application/x-www-form-urlencoded; charset=UTF-8",  
+           data: data
+       });  
 })
 </script>
 
@@ -44,6 +50,7 @@ new Fingerprint2().get(function(result) {
         <li>
             <div style="float:right">{{ moment(comment.updated_at).fromNow() }}</div>
             <div>author : {{ comment.user.username }}</div>
+            <div id='browser_id'>browser_id: {{ browser_id }}</div>
             <div style="font-size: 2em">{{ comment.content }}</div>
         </li>
         {% endfor %}

@@ -1,4 +1,4 @@
-from flask import render_template, session, redirect, url_for, request, flash
+from flask import render_template, session, redirect, url_for, request, flash, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 from .forms import LoginForm, RegisterationForm, CommentForm
 from ..models import User, Comment
@@ -8,7 +8,9 @@ from . import main
 
 @main.route("/", methods=["GET","POST"])
 def index():
-    browser_id = request.args.get('id')
+    if request.method == "POST":
+        browser_id = request.form.get('id')
+        print(browser_id)
     user_ip = request.remote_addr
     form = CommentForm()
     if form.validate_on_submit():
@@ -26,6 +28,10 @@ def index():
         return redirect(url_for('main.index'))
     comments = Comment.query.order_by(Comment.updated_at.desc()).all()   
     return render_template('index.html', form=form, comments=comments)
+
+@main.route('/getID', methods=['GET'])
+def getID():
+    return jsonify({'ok':True})
 
 @main.route('/login', methods=['GET','POST'])
 def login():
