@@ -10,16 +10,6 @@
 <script>
 new Fingerprint2().get(function(result) {
     var data = {'id': result};
-    $.ajax({
-        type:'GET',
-        url:'{{ url_for("main.getID" )}}',
-        data:data,
-        dataType:'json',
-        success:function(data){
-            console.log(result)
-            $("#browser_id").text("browser_id : " + result)
-        }
-    });
     $.ajax({  
            type: "post",  
            url: '{{ url_for("main.index") }}',  
@@ -50,7 +40,7 @@ new Fingerprint2().get(function(result) {
         <li>
             <div style="float:right">{{ moment(comment.updated_at).fromNow() }}</div>
             <div>author : {{ comment.user.username }}</div>
-            <div id='browser_id'>browser_id: {{ browser_id }}</div>
+            <div id='browser_id'>browser_id: {{ comment.browser_id }}</div>
             <div style="font-size: 2em">{{ comment.content }}</div>
         </li>
         {% endfor %}

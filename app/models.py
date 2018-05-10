@@ -40,7 +40,8 @@ class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)    
     content = db.Column(db.Text)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))   
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id')) 
+    browser_id = db.Column(db.String(48))  
     created_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     

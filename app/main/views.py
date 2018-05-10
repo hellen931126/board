@@ -7,49 +7,51 @@ from .. import db, redis
 from . import main
 
 @main.route("/", methods=["GET","POST"])
-def index():
-    if request.method == "POST":
-        browser_id = request.form.get('id')
-        print(browser_id)
+def index():  
     user_ip = request.remote_addr
     form = CommentForm()
-    if form.validate_on_submit():
-        if not current_user.is_authenticated:
-            return redirect(url_for('main.login'))
-        if redis.get(browser_id):
-            if int(redis.get(browser_id)) > 3 or int(redis.get(user_ip)) > 3:
+    if request.method == "POST":
+        if 'browser_id' not in session:
+            browser_id = request.form.get('id')
+            if browser_id:
+                session['browser_id'] = browser_id
+        if form.validate_on_submit():
+            if not current_user.is_authenticated:
                 return redirect(url_for('main.login'))
-        redis.incr(browser_id)
-        redis.incr(user_ip)
-        redis.expire(browser_id, 30)
-        redis.expire(user_ip, 30)
-        comment = Comment(content=form.content.data, user=current_user._get_current_object())
-        db.session.add(comment)
-        return redirect(url_for('main.index'))
+            comment = Comment(content=form.content.data, user=current_user._get_current_object(), browser_id=session['browser_id'])
+            if redis.get(comment.browser_id):
+                if int(redis.get(comment.browser_id)) > 3 or int(redis.get(user_ip)) > 3:
+                    return redirect(url_for('main.login'))
+            redis.incr(comment.browser_id)
+            redis.incr(user_ip)
+            redis.expire(comment.browser_id, 30)
+            redis.expire(user_ip, 30)
+            db.session.add(comment)
+            return redirect(url_for('main.index'))
     comments = Comment.query.order_by(Comment.updated_at.desc()).all()   
     return render_template('index.html', form=form, comments=comments)
 
-@main.route('/getID', methods=['GET'])
-def getID():
-    return jsonify({'ok':True})
-
 @main.route('/login', methods=['GET','POST'])
 def login():
-    browser_id = request.args.get('id')
     user_ip = request.remote_addr
     form = LoginForm()
-    if form.validate_on_submit():
-        if redis.get(browser_id):
-            if int(redis.get(browser_id)) > 3 or int(redis.get(user_ip)) > 3:
-                return redirect(url_for('main.login'))
-        redis.incr(browser_id)
-        redis.incr(user_ip)
-        redis.expire(browser_id, 30)
-        redis.expire(user_ip, 30)
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is not None and user.verify_password(form.password.data):
-            login_user(user, form.remember_me.data)          
-            return redirect(request.args.get("next") or url_for("main.index"))
+    if request.method == "POST":
+        if 'browser_id' not in session:
+            browser_id = request.args.get('id')
+            if browser_id:
+                session['browser_id'] = browser_id
+        if form.validate_on_submit():
+            if redis.get(session['browser_id']):
+                if int(redis.get(session['browser_id'])) > 3 or int(redis.get(user_ip)) > 3:
+                    return redirect(url_for('main.login'))
+            redis.incr(session['browser_id'])
+            redis.incr(user_ip)
+            redis.expire(session['browser_id'], 30)
+            redis.expire(user_ip, 30)
+            user = User.query.filter_by(username=form.username.data).first()
+            if user is not None and user.verify_password(form.password.data):
+                login_user(user, form.remember_me.data)          
+                return redirect(request.args.get("next") or url_for("main.index"))
     return render_template("login.html", form=form)
 
 @main.route('/logout')
